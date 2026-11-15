@@ -136,7 +136,8 @@ class RenderService {
 
     try {
       const response = await client.post('/services', payload);
-      const data = response.data;
+      const raw = response.data;
+      const data = (raw && raw.service) ? raw.service : raw;
 
       return {
         id: data.id,
@@ -163,7 +164,8 @@ class RenderService {
     const client = this.getClient();
     try {
       const response = await client.get(`/services/${serviceId}`);
-      const data = response.data;
+      const raw = response.data;
+      const data = (raw && raw.service) ? raw.service : raw;
 
       return {
         id: data.id,
@@ -194,7 +196,8 @@ class RenderService {
         params: { limit }
       });
 
-      const rawDeploys = response.data || [];
+      const rawData = response.data;
+      const rawDeploys = Array.isArray(rawData) ? rawData : (rawData ? [rawData] : []);
       return rawDeploys.map((item) => {
         const d = item.deploy || item;
         return {
