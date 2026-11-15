@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Rocket, X, Lock, GitBranch, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Rocket, X, Lock, GitBranch, Loader2, CheckCircle2, AlertCircle, FolderGit2 } from 'lucide-react';
 import { api, getSavedAdminSecret, saveAdminSecret } from '../services/api';
 
-export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, defaultBranch = 'main' }) {
+export default function TriggerDeployModal({
+  isOpen,
+  onClose,
+  onDeploySuccess,
+  projects = [],
+  initialProjectId = null,
+  defaultBranch = 'main'
+}) {
+  const [selectedProjectId, setSelectedProjectId] = useState(initialProjectId || (projects[0]?.id || 'proj_demo_portfolio'));
   const [branch, setBranch] = useState(defaultBranch);
   const [adminSecret, setAdminSecret] = useState('');
   const [rememberSecret, setRememberSecret] = useState(true);
@@ -12,6 +20,11 @@ export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, d
 
   useEffect(() => {
     if (isOpen) {
+      if (initialProjectId) {
+        setSelectedProjectId(initialProjectId);
+      } else if (projects.length > 0) {
+        setSelectedProjectId(projects[0].id);
+      }
       setBranch(defaultBranch || 'main');
       const saved = getSavedAdminSecret();
       if (saved) {
@@ -20,9 +33,11 @@ export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, d
       setError(null);
       setSuccessResult(null);
     }
-  }, [isOpen, defaultBranch]);
+  }, [isOpen, initialProjectId, defaultBranch, projects]);
 
   if (!isOpen) return null;
+
+  const currentProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,11 +55,16 @@ export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, d
         saveAdminSecret(adminSecret.trim());
       }
 
-      const res = await api.triggerDeploy(branch.trim(), adminSecret.trim());
+      const res = await api.triggerDeploy(
+        branch.trim(),
+        adminSecret.trim(),
+        selectedProjectId,
+        currentProject?.workflowId
+      );
       setSuccessResult(res);
 
       if (onDeploySuccess) {
-        onDeploySuccess(res);
+        onDeploySuccess(res, selectedProjectId);
       }
     } catch (err) {
       setError(err.message || 'Failed to dispatch workflow run.');
@@ -91,7 +111,10 @@ export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, d
               <div>
                 <h4 className="text-sm font-semibold text-emerald-200">Workflow Dispatched!</h4>
                 <p className="text-xs text-slate-300 mt-1">
-                  GitHub Actions has queued a new run on branch <code className="text-emerald-300 font-mono font-bold">{branch}</code>.
+                  GitHub Actions queued a new run for <strong className="text-white">{currentProject?.name}</strong> on branch <code className="text-emerald-300 font-mono font-bold">{branch}</code>.
+                </p>
+                <p className="text-[11px] text-slate-400 font-mono mt-1">
+                  Workflow: {currentProject?.workflowId}
                 </p>
               </div>
               <div className="pt-2">
@@ -106,6 +129,37 @@ export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, d
             </div>
           ) : (
             <>
+              {/* Project Target Selector */}
+              {projects.length > 1 && (
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    Target Project
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {projects.map((proj) => (
+                      <button
+                        type="button"
+                        key={proj.id}
+                        onClick={() => setSelectedProjectId(proj.id)}
+                        className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between gap-1.5 ${
+                          selectedProjectId === proj.id
+                            ? 'bg-indigo-600/15 border-indigo-500 text-white ring-1 ring-indigo-500'
+                            : 'bg-[#0a0f1d] border-card-border text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <span className="text-xs font-semibold line-clamp-1">{proj.name}</span>
+                          <FolderGit2 className={`w-3.5 h-3.5 ${selectedProjectId === proj.id ? 'text-indigo-400' : 'text-slate-600'}`} />
+                        </div>
+                        <span className="text-[10px] font-mono text-slate-400">
+                          {proj.workflowId}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1.5">
                   Target Branch
@@ -122,7 +176,7 @@ export default function TriggerDeployModal({ isOpen, onClose, onDeploySuccess, d
                   />
                 </div>
                 <p className="mt-1 text-[11px] text-slate-400">
-                  The workflow_dispatch trigger will execute against this git ref.
+                  Target workflow: <code className="text-indigo-300 font-mono">{currentProject?.workflowId || 'deploy.yml'}</code>
                 </p>
               </div>
 

@@ -1,9 +1,12 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Rocket, RefreshCw, GitBranch, Github, ExternalLink } from 'lucide-react';
+import { Rocket, RefreshCw, GitBranch, Github, Layers } from 'lucide-react';
 
 export default function Navbar({
-  project,
+  projects = [],
+  selectedProjectId,
+  onSelectProject,
+  activeProject,
   onOpenDeployModal,
   onRefresh,
   isRefreshing
@@ -34,15 +37,30 @@ export default function Navbar({
           {getPageTitle(location.pathname)}
         </h1>
 
-        {project && (
-          <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-card border border-card-border text-xs text-slate-300">
-            <Github className="w-3.5 h-3.5 text-slate-400" />
-            <span className="font-mono text-[11px] text-slate-200">{project.fullName || `${project.owner}/${project.name}`}</span>
-            <span className="text-slate-600">|</span>
-            <span className="flex items-center gap-1 font-mono text-[11px] text-indigo-400">
-              <GitBranch className="w-3 h-3" />
-              {project.branch || 'main'}
-            </span>
+        {/* Project Selector dropdown in Navbar */}
+        {projects.length > 0 && (
+          <div className="hidden sm:flex items-center gap-2">
+            <span className="text-slate-600">/</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-card border border-card-border text-xs">
+              <Layers className="w-3.5 h-3.5 text-indigo-400" />
+              <select
+                value={selectedProjectId || projects[0]?.id}
+                onChange={(e) => onSelectProject && onSelectProject(e.target.value)}
+                className="bg-transparent text-slate-200 font-medium focus:outline-none cursor-pointer text-xs"
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id} className="bg-[#0e1422] text-slate-200">
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+              {activeProject && (
+                <span className="flex items-center gap-1 text-[11px] text-slate-400 font-mono ml-1 border-l border-slate-700 pl-2">
+                  <GitBranch className="w-3 h-3 text-indigo-400" />
+                  {activeProject.branch || 'main'}
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>

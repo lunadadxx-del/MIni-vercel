@@ -18,11 +18,12 @@ const getProjects = async (req, res, next) => {
       projects: [
         {
           id: 'proj_primary',
-          name: repoInfo.name,
+          name: 'DeployFlow Platform',
           fullName: repoInfo.fullName,
           owner: repoInfo.owner,
           ownerAvatar: repoInfo.ownerAvatar,
-          description: repoInfo.description,
+          description: repoInfo.description || 'Core deployment dashboard and Docker backend API',
+          rootDirectory: 'backend & frontend',
           branch: repoInfo.defaultBranch,
           repoUrl: repoInfo.htmlUrl,
           liveUrl: repoInfo.liveAppUrl,
@@ -31,7 +32,28 @@ const getProjects = async (req, res, next) => {
           openIssues: repoInfo.openIssues,
           visibility: repoInfo.isPrivate ? 'private' : 'public',
           updatedAt: repoInfo.updatedAt,
-          workflowId: repoInfo.workflowId,
+          workflowId: config.github.workflowId || 'deploy.yml',
+          runtime: 'Docker Web Service (Backend) + Static Site (Frontend)',
+          status: 'active'
+        },
+        {
+          id: 'proj_demo_portfolio',
+          name: 'DeployFlow Demo Portfolio',
+          fullName: `${repoInfo.fullName}/demo-portfolio`,
+          owner: repoInfo.owner,
+          ownerAvatar: repoInfo.ownerAvatar,
+          description: 'Modern developer portfolio deployed end-to-end through Mini Vercel platform via automated CI/CD',
+          rootDirectory: 'demo-portfolio',
+          branch: repoInfo.defaultBranch,
+          repoUrl: `${repoInfo.htmlUrl}/tree/${repoInfo.defaultBranch}/demo-portfolio`,
+          liveUrl: config.demoPortfolioLiveUrl,
+          stars: repoInfo.stars,
+          forks: repoInfo.forks,
+          openIssues: repoInfo.openIssues,
+          visibility: repoInfo.isPrivate ? 'private' : 'public',
+          updatedAt: repoInfo.updatedAt,
+          workflowId: config.github.demoWorkflowId || 'demo-portfolio-deploy.yml',
+          runtime: 'Render Static Site',
           status: 'active'
         }
       ]

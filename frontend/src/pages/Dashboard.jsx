@@ -19,7 +19,10 @@ import StatusBadge from '../components/StatusBadge';
 import ErrorAlert from '../components/ErrorAlert';
 
 export default function Dashboard({
-  project,
+  projects = [],
+  selectedProjectId,
+  onSelectProject,
+  activeProject,
   deployments = [],
   commits = [],
   health,
@@ -27,10 +30,11 @@ export default function Dashboard({
   error,
   onOpenDeploy
 }) {
+  const project = activeProject || projects[0] || null;
   const latestRun = deployments[0] || null;
 
   // Compute metrics from actual fetched GitHub data
-  const totalConfiguredProjects = project ? 1 : 0;
+  const totalConfiguredProjects = projects.length || (project ? 1 : 0);
   const successfulRuns = deployments.filter((d) => d.conclusion === 'success').length;
   const failedRuns = deployments.filter((d) => d.conclusion === 'failure').length;
 

@@ -6,7 +6,10 @@ import TriggerDeployModal from './TriggerDeployModal';
 export default function Layout({
   children,
   health,
-  project,
+  projects = [],
+  selectedProjectId,
+  onSelectProject,
+  activeProject,
   onRefresh,
   isRefreshing,
   onDeploySuccess
@@ -16,12 +19,15 @@ export default function Layout({
   return (
     <div className="flex min-h-screen bg-background">
       {/* Fixed Left Sidebar */}
-      <Sidebar health={health} liveUrl={project?.liveUrl} />
+      <Sidebar health={health} liveUrl={activeProject?.liveUrl} />
 
       {/* Main Content Area (offset by 64 = 16rem = w-64) */}
       <div className="flex-1 ml-64 flex flex-col min-w-0">
         <Navbar
-          project={project}
+          projects={projects}
+          selectedProjectId={selectedProjectId}
+          onSelectProject={onSelectProject}
+          activeProject={activeProject}
           onOpenDeployModal={() => setIsDeployModalOpen(true)}
           onRefresh={onRefresh}
           isRefreshing={isRefreshing}
@@ -36,9 +42,11 @@ export default function Layout({
       <TriggerDeployModal
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
-        defaultBranch={project?.branch || 'main'}
-        onDeploySuccess={(res) => {
-          if (onDeploySuccess) onDeploySuccess(res);
+        projects={projects}
+        initialProjectId={selectedProjectId}
+        defaultBranch={activeProject?.branch || 'main'}
+        onDeploySuccess={(res, deployedProjectId) => {
+          if (onDeploySuccess) onDeploySuccess(res, deployedProjectId);
         }}
       />
     </div>

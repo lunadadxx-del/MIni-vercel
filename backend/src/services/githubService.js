@@ -63,10 +63,11 @@ class GitHubService {
     };
   }
 
-  async getWorkflowRuns(page = 1, perPage = 20) {
+  async getWorkflowRuns(page = 1, perPage = 20, targetWorkflowId = null) {
     this.checkConfiguration();
     const client = this.getClient();
-    const { owner, repo, workflowId } = config.github;
+    const { owner, repo } = config.github;
+    const workflowId = targetWorkflowId || config.github.workflowId;
 
     let runsResponse;
     let usedWorkflowId = true;
@@ -253,7 +254,7 @@ class GitHubService {
     }));
   }
 
-  async triggerWorkflowDispatch(ref = 'main', inputs = {}) {
+  async triggerWorkflowDispatch(ref = 'main', inputs = {}, targetWorkflowId = null) {
     this.checkConfiguration();
 
     if (!config.github.token) {
@@ -263,7 +264,8 @@ class GitHubService {
     }
 
     const client = this.getClient();
-    const { owner, repo, workflowId } = config.github;
+    const { owner, repo } = config.github;
+    const workflowId = targetWorkflowId || config.github.workflowId;
 
     // Validate ref to prevent command injection / invalid format
     const cleanRef = typeof ref === 'string' && ref.trim() ? ref.trim() : 'main';

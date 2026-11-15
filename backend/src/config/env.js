@@ -12,10 +12,12 @@ const config = {
     repo: process.env.GITHUB_REPO ? process.env.GITHUB_REPO.trim() : '',
     workflowId: process.env.GITHUB_WORKFLOW_ID ? process.env.GITHUB_WORKFLOW_ID.trim() : 'deploy.yml',
     token: process.env.GITHUB_TOKEN ? process.env.GITHUB_TOKEN.trim() : '',
+    demoWorkflowId: process.env.DEMO_WORKFLOW_ID ? process.env.DEMO_WORKFLOW_ID.trim() : 'demo-portfolio-deploy.yml',
   },
   adminSecret: process.env.ADMIN_SECRET ? process.env.ADMIN_SECRET.trim() : '',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   liveAppUrl: process.env.LIVE_APP_URL || '',
+  demoPortfolioLiveUrl: process.env.DEMO_PORTFOLIO_LIVE_URL || 'https://mini-vercel-demo-portfolio.onrender.com',
   isConfigured: {
     github: Boolean(process.env.GITHUB_OWNER && process.env.GITHUB_REPO),
     githubToken: Boolean(process.env.GITHUB_TOKEN),

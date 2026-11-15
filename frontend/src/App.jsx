@@ -10,12 +10,15 @@ import { api } from './services/api';
 
 export default function App() {
   const [health, setHealth] = useState(null);
-  const [project, setProject] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState('proj_demo_portfolio');
+  const [workflowFilter, setWorkflowFilter] = useState('all');
   const [deployments, setDeployments] = useState([]);
   const [commits, setCommits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
+  const [deployTargetProject, setDeployTargetProject] = useState(null);
 
   const fetchData = useCallback(async (isSilent = false) => {
     if (!isSilent) {
@@ -36,17 +39,17 @@ export default function App() {
       try {
         const projectData = await api.getProjects();
         if (projectData.projects && projectData.projects.length > 0) {
-          setProject(projectData.projects[0]);
+          setProjects(projectData.projects);
         } else {
-          setProject(null);
+          setProjects([]);
         }
       } catch (err) {
         // Handled gracefully
       }
 
-      // 3. Deployments
+      // 3. Deployments (fetch all runs across workflows)
       try {
-        const deployData = await api.getDeployments(1, 20);
+        const deployData = await api.getDeployments(1, 30);
         setDeployments(deployData.deployments || []);
       } catch (err) {
         // Handled gracefully
@@ -70,26 +73,34 @@ export default function App() {
   useEffect(() => {
     fetchData();
 
-    // Periodic telemetry polling every 30 seconds
+    // Periodic telemetry polling every 25 seconds
     const interval = setInterval(() => {
       fetchData(true);
-    }, 30000);
+    }, 25000);
 
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  const handleDeploySuccess = (res) => {
+  const handleDeploySuccess = (res, deployedProjectId) => {
+    if (deployedProjectId) {
+      setSelectedProjectId(deployedProjectId);
+    }
     // Re-sync after short delay so GitHub Actions has time to register queued run
     setTimeout(() => {
       fetchData(true);
     }, 2500);
   };
 
+  const activeProject = projects.find((p) => p.id === selectedProjectId) || projects[0] || null;
+
   return (
     <Router>
       <Layout
         health={health}
-        project={project}
+        projects={projects}
+        selectedProjectId={selectedProjectId}
+        onSelectProject={(id) => setSelectedProjectId(id)}
+        activeProject={activeProject}
         onRefresh={() => fetchData(false)}
         isRefreshing={isRefreshing}
         onDeploySuccess={handleDeploySuccess}
@@ -99,7 +110,10 @@ export default function App() {
             path="/"
             element={
               <Dashboard
-                project={project}
+                projects={projects}
+                selectedProjectId={selectedProjectId}
+                onSelectProject={(id) => setSelectedProjectId(id)}
+                activeProject={activeProject}
                 deployments={deployments}
                 commits={commits}
                 health={health}
@@ -112,9 +126,13 @@ export default function App() {
             path="/projects"
             element={
               <Projects
-                project={project}
+                projects={projects}
                 health={health}
                 loading={loading}
+                onTriggerDeployProject={(id) => {
+                  setSelectedProjectId(id);
+                  // Trigger open modal via query or state
+                }}
               />
             }
           />
@@ -123,6 +141,9 @@ export default function App() {
             element={
               <Deployments
                 deployments={deployments}
+                projects={projects}
+                selectedWorkflowFilter={workflowFilter}
+                onSelectWorkflowFilter={(filter) => setWorkflowFilter(filter)}
                 loading={loading}
                 error={error}
                 onRefresh={() => fetchData(false)}
@@ -143,7 +164,7 @@ export default function App() {
             element={
               <Settings
                 health={health}
-                project={project}
+                project={activeProject}
                 onRefresh={() => fetchData(false)}
               />
             }

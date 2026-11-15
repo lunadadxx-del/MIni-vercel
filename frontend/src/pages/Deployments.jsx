@@ -16,11 +16,25 @@ import StatusBadge from '../components/StatusBadge';
 
 export default function Deployments({
   deployments = [],
+  projects = [],
+  selectedWorkflowFilter = 'all',
+  onSelectWorkflowFilter,
   loading,
   error,
   onRefresh,
   onOpenDeploy
 }) {
+  const filteredDeployments = deployments.filter((run) => {
+    if (selectedWorkflowFilter === 'all') return true;
+    if (selectedWorkflowFilter === 'demo') {
+      return run.name?.toLowerCase().includes('demo') || run.name?.toLowerCase().includes('portfolio');
+    }
+    if (selectedWorkflowFilter === 'platform') {
+      return !run.name?.toLowerCase().includes('demo') && !run.name?.toLowerCase().includes('portfolio');
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-6">
       
@@ -52,13 +66,47 @@ export default function Deployments({
         </div>
       </div>
 
+      {/* Workflow Filter Tabs */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onSelectWorkflowFilter && onSelectWorkflowFilter('all')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            selectedWorkflowFilter === 'all'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-card text-slate-400 hover:text-white border border-card-border'
+          }`}
+        >
+          All Runs ({deployments.length})
+        </button>
+        <button
+          onClick={() => onSelectWorkflowFilter && onSelectWorkflowFilter('demo')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            selectedWorkflowFilter === 'demo'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-card text-slate-400 hover:text-white border border-card-border'
+          }`}
+        >
+          Demo Portfolio Runs
+        </button>
+        <button
+          onClick={() => onSelectWorkflowFilter && onSelectWorkflowFilter('platform')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            selectedWorkflowFilter === 'platform'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'bg-card text-slate-400 hover:text-white border border-card-border'
+          }`}
+        >
+          Platform Runs
+        </button>
+      </div>
+
       {/* Deployments Table / Card List */}
       <div className="bg-card border border-card-border rounded-2xl overflow-hidden shadow-sm">
-        {loading && deployments.length === 0 ? (
+        {loading && filteredDeployments.length === 0 ? (
           <div className="p-16 text-center text-xs text-slate-400 animate-pulse">
             Fetching workflow telemetry from GitHub Actions API...
           </div>
-        ) : deployments.length === 0 ? (
+        ) : filteredDeployments.length === 0 ? (
           <div className="p-16 text-center text-xs text-slate-400">
             No workflow runs recorded yet. Click "Trigger New Deploy" or push a commit to trigger CI/CD.
           </div>
@@ -77,7 +125,7 @@ export default function Deployments({
                 </tr>
               </thead>
               <tbody className="divide-y divide-card-border">
-                {deployments.map((run) => (
+                {filteredDeployments.map((run) => (
                   <tr
                     key={run.id}
                     className="hover:bg-slate-800/30 transition-colors group"

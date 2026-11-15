@@ -65,8 +65,9 @@ export const api = {
   },
 
   // Deployments
-  async getDeployments(page = 1, limit = 20) {
-    const res = await fetch(`${API_BASE_URL}/api/deployments?page=${page}&limit=${limit}`, {
+  async getDeployments(page = 1, limit = 20, projectId = null) {
+    const projectQuery = projectId ? `&projectId=${encodeURIComponent(projectId)}` : '';
+    const res = await fetch(`${API_BASE_URL}/api/deployments?page=${page}&limit=${limit}${projectQuery}`, {
       headers: { Accept: 'application/json' }
     });
     return handleResponse(res);
@@ -106,7 +107,7 @@ export const api = {
   },
 
   // Trigger Deployment via workflow_dispatch
-  async triggerDeploy(branch = 'main', secret = '') {
+  async triggerDeploy(branch = 'main', secret = '', projectId = 'proj_primary', workflowId = null) {
     const token = secret || getSavedAdminSecret();
     const res = await fetch(`${API_BASE_URL}/api/deploy`, {
       method: 'POST',
@@ -114,7 +115,7 @@ export const api = {
         'Content-Type': 'application/json',
         'x-admin-secret': token
       },
-      body: JSON.stringify({ branch })
+      body: JSON.stringify({ branch, projectId, workflowId })
     });
     return handleResponse(res);
   }

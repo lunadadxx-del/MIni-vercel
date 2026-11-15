@@ -82,7 +82,12 @@ This project uses **real Docker containerization**, **real GitHub Actions automa
 Mini Vercel/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml          # 10-step GitHub Actions CI/CD Pipeline
+│       ├── deploy.yml                   # DeployFlow Platform CI/CD Pipeline
+│       └── demo-portfolio-deploy.yml    # Demo Portfolio Dedicated CI/CD Pipeline
+├── demo-portfolio/                      # Demo Application deployed via DeployFlow
+│   ├── src/                             # React, Vite & Tailwind portfolio
+│   ├── index.html
+│   └── package.json
 ├── backend/
 │   ├── src/
 │   │   ├── config/

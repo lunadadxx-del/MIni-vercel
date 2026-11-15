@@ -15,7 +15,14 @@ const getDeployments = async (req, res, next) => {
     const page = parseInt(req.query.page || '1', 10);
     const limit = parseInt(req.query.limit || '20', 10);
 
-    const result = await githubService.getWorkflowRuns(page, limit);
+    let targetWorkflow = req.query.workflowId || null;
+    if (req.query.projectId === 'proj_demo_portfolio') {
+      targetWorkflow = config.github.demoWorkflowId || 'demo-portfolio-deploy.yml';
+    } else if (req.query.projectId === 'proj_primary') {
+      targetWorkflow = config.github.workflowId || 'deploy.yml';
+    }
+
+    const result = await githubService.getWorkflowRuns(page, limit, targetWorkflow);
 
     res.status(200).json({
       configured: true,
@@ -104,14 +111,21 @@ const getJobLogs = async (req, res, next) => {
 
 const triggerDeploy = async (req, res, next) => {
   try {
-    const { branch, ref } = req.body || {};
+    const { branch, ref, projectId, workflowId } = req.body || {};
     const targetRef = branch || ref || 'main';
 
-    const dispatchResult = await githubService.triggerWorkflowDispatch(targetRef);
+    let targetWorkflow = workflowId || null;
+    if (projectId === 'proj_demo_portfolio') {
+      targetWorkflow = config.github.demoWorkflowId || 'demo-portfolio-deploy.yml';
+    } else if (projectId === 'proj_primary') {
+      targetWorkflow = config.github.workflowId || 'deploy.yml';
+    }
+
+    const dispatchResult = await githubService.triggerWorkflowDispatch(targetRef, {}, targetWorkflow);
 
     res.status(202).json({
       success: true,
-      message: `Deployment triggered successfully via GitHub Actions workflow_dispatch on branch "${targetRef}".`,
+      message: `Deployment triggered successfully via GitHub Actions workflow_dispatch on branch "${targetRef}" (workflow: ${dispatchResult.workflow || 'default'}).`,
       data: dispatchResult
     });
   } catch (error) {
