@@ -1,0 +1,36 @@
+{
+  "name": "deployflow-backend",
+  "version": "1.0.0",
+  "description": "Backend API for DeployFlow - Mini Vercel automated CI/CD deployment platform",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --detectOpenHandles --forceExit"
+  },
+  "keywords": [
+    "devops",
+    "vercel",
+    "github-actions",
+    "docker",
+    "ci-cd",
+    "render"
+  ],
+  "author": "DeployFlow Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.7",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 10000
+  }
+}
