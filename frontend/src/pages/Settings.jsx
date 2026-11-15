@@ -128,6 +128,22 @@ export default function Settings({ health, project, onRefresh }) {
             </div>
           </div>
 
+          {/* Render API Key Status */}
+          <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[#666666] font-medium flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[#888888]" />
+                Render REST API
+              </span>
+              <span className={`font-mono text-[10px] uppercase font-semibold ${health?.configuration?.renderApiKeyConfigured ? 'text-[#15803D]' : 'text-[#B45309]'}`}>
+                {health?.configuration?.renderApiKeyConfigured ? 'Active' : 'Unconfigured'}
+              </span>
+            </div>
+            <div className="font-mono text-[#888888] text-xs pt-0.5">
+              {health?.configuration?.renderApiKeyConfigured ? 'rnd_••••••••••••••••••••••••••••' : 'Required for external Git repo auto-deploy'}
+            </div>
+          </div>
+
           {/* Live App URL */}
           <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1 md:col-span-2">
             <div className="flex items-center justify-between">

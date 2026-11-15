@@ -21,8 +21,8 @@ COPY package*.json ./
 # Install only production dependencies cleanly
 RUN npm ci --omit=dev && npm cache clean --force
 
-# Copy application source code
-COPY src ./src
+# Copy application source code with non-root ownership
+COPY --chown=node:node src ./src
 
 # Create non-root user security context (node user exists in official node alpine image)
 USER node

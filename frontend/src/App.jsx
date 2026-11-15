@@ -19,6 +19,7 @@ export default function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const fetchData = useCallback(async (isSilent = false) => {
     if (!isSilent) {
@@ -89,6 +90,28 @@ export default function App() {
     }, 2500);
   };
 
+  const handleProjectImported = (importedProject) => {
+    if (importedProject && importedProject.id) {
+      setSelectedProjectId(importedProject.id);
+    }
+    fetchData(true);
+  };
+
+  const handleDeleteProject = async (projectId) => {
+    if (!window.confirm('Are you sure you want to remove this project from Mini Vercel?')) {
+      return;
+    }
+    try {
+      await api.deleteProject(projectId);
+      if (selectedProjectId === projectId) {
+        setSelectedProjectId('proj_demo_portfolio');
+      }
+      fetchData(false);
+    } catch (err) {
+      alert(`Error removing project: ${err.message}`);
+    }
+  };
+
   const activeProject = projects.find((p) => p.id === selectedProjectId) || projects[0] || null;
 
   return (
@@ -104,6 +127,9 @@ export default function App() {
         onDeploySuccess={handleDeploySuccess}
         isDeployModalOpen={isDeployModalOpen}
         setIsDeployModalOpen={setIsDeployModalOpen}
+        isImportModalOpen={isImportModalOpen}
+        setIsImportModalOpen={setIsImportModalOpen}
+        onProjectImported={handleProjectImported}
       >
         <Routes>
           <Route
@@ -120,6 +146,7 @@ export default function App() {
                 loading={loading}
                 error={error}
                 onOpenDeploy={() => setIsDeployModalOpen(true)}
+                onOpenImportModal={() => setIsImportModalOpen(true)}
               />
             }
           />
@@ -134,6 +161,8 @@ export default function App() {
                   setSelectedProjectId(id);
                   setIsDeployModalOpen(true);
                 }}
+                onOpenImportModal={() => setIsImportModalOpen(true)}
+                onDeleteProject={handleDeleteProject}
               />
             }
           />

@@ -16,6 +16,7 @@ const getHealth = (req, res) => {
       githubRepository: config.isConfigured.github,
       githubTokenConfigured: config.isConfigured.githubToken,
       adminSecretConfigured: config.isConfigured.adminSecret,
+      renderApiKeyConfigured: config.isConfigured.render,
       liveAppConfigured: config.isConfigured.liveApp,
       configuredTarget: config.isConfigured.github
         ? `${config.github.owner}/${config.github.repo}`

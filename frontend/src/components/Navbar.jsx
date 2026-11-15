@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Rocket, RefreshCw, GitBranch, Github, Layers } from 'lucide-react';
+import { Rocket, RefreshCw, GitBranch, Plus, Layers } from 'lucide-react';
 
 export default function Navbar({
   projects = [],
@@ -8,6 +8,7 @@ export default function Navbar({
   onSelectProject,
   activeProject,
   onOpenDeployModal,
+  onOpenImportModal,
   onRefresh,
   isRefreshing
 }) {
@@ -75,6 +76,17 @@ export default function Navbar({
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#171717]' : ''}`} />
         </button>
+
+        {/* New Project / Import Git Repo button */}
+        {onOpenImportModal && (
+          <button
+            onClick={onOpenImportModal}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#FAFAFA] text-[#171717] border border-[#E5E5E5] text-xs font-medium rounded-md transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New Project</span>
+          </button>
+        )}
 
         {/* Deploy Action Button (Vercel Style: Solid Black, White Text) */}
         <button

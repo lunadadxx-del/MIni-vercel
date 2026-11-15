@@ -10,7 +10,8 @@ import {
   FolderGit2,
   Terminal,
   ChevronRight,
-  Server
+  Server,
+  Plus
 } from 'lucide-react';
 import MetricCard from '../components/MetricCard';
 import StatusBadge from '../components/StatusBadge';
@@ -26,7 +27,8 @@ export default function Dashboard({
   health,
   loading,
   error,
-  onOpenDeploy
+  onOpenDeploy,
+  onOpenImportModal
 }) {
   const project = activeProject || projects[0] || null;
   const latestRun = deployments[0] || null;
@@ -81,6 +83,16 @@ export default function Dashboard({
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-center">
+            {onOpenImportModal && (
+              <button
+                onClick={onOpenImportModal}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#FAFAFA] text-[#171717] text-xs font-medium rounded-md border border-[#E5E5E5] transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>New Project</span>
+              </button>
+            )}
+
             {project?.liveUrl && (
               <a
                 href={project.liveUrl}

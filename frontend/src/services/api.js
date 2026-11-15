@@ -56,6 +56,54 @@ export const api = {
     return handleResponse(res);
   },
 
+  // Import New GitHub Repository Project via Render API
+  async importProject({ repoUrl, projectName, branch = 'main', publishDir = '.', buildCommand = '' }) {
+    const adminSecret = getSavedAdminSecret();
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    };
+    if (adminSecret) {
+      headers['x-admin-secret'] = adminSecret;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/import`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        repoUrl,
+        projectName,
+        branch,
+        publishDir,
+        buildCommand
+      })
+    });
+    return handleResponse(res);
+  },
+
+  // Get project live status
+  async getProjectStatus(projectId) {
+    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/status`, {
+      headers: { Accept: 'application/json' }
+    });
+    return handleResponse(res);
+  },
+
+  // Delete imported project
+  async deleteProject(projectId) {
+    const adminSecret = getSavedAdminSecret();
+    const headers = { Accept: 'application/json' };
+    if (adminSecret) {
+      headers['x-admin-secret'] = adminSecret;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
+      method: 'DELETE',
+      headers
+    });
+    return handleResponse(res);
+  },
+
   // Commits
   async getCommits() {
     const res = await fetch(`${API_BASE_URL}/api/commits`, {

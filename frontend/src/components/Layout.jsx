@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import TriggerDeployModal from './TriggerDeployModal';
+import ImportProjectModal from './ImportProjectModal';
 
 export default function Layout({
   children,
@@ -14,11 +15,19 @@ export default function Layout({
   isRefreshing,
   onDeploySuccess,
   isDeployModalOpen,
-  setIsDeployModalOpen
+  setIsDeployModalOpen,
+  isImportModalOpen,
+  setIsImportModalOpen,
+  onProjectImported
 }) {
-  const [internalModalOpen, setInternalModalOpen] = useState(false);
-  const modalOpen = isDeployModalOpen !== undefined ? isDeployModalOpen : internalModalOpen;
-  const setModalOpen = setIsDeployModalOpen || setInternalModalOpen;
+  const [internalDeployModalOpen, setInternalDeployModalOpen] = useState(false);
+  const [internalImportModalOpen, setInternalImportModalOpen] = useState(false);
+
+  const deployModalOpen = isDeployModalOpen !== undefined ? isDeployModalOpen : internalDeployModalOpen;
+  const setDeployModalOpen = setIsDeployModalOpen || setInternalDeployModalOpen;
+
+  const importModalOpen = isImportModalOpen !== undefined ? isImportModalOpen : internalImportModalOpen;
+  const setImportModalOpen = setIsImportModalOpen || setInternalImportModalOpen;
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -32,7 +41,8 @@ export default function Layout({
           selectedProjectId={selectedProjectId}
           onSelectProject={onSelectProject}
           activeProject={activeProject}
-          onOpenDeployModal={() => setModalOpen(true)}
+          onOpenDeployModal={() => setDeployModalOpen(true)}
+          onOpenImportModal={() => setImportModalOpen(true)}
           onRefresh={onRefresh}
           isRefreshing={isRefreshing}
         />
@@ -42,15 +52,24 @@ export default function Layout({
         </main>
       </div>
 
-      {/* Deployment Modal */}
+      {/* Trigger Deployment Modal */}
       <TriggerDeployModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={deployModalOpen}
+        onClose={() => setDeployModalOpen(false)}
         projects={projects}
         initialProjectId={selectedProjectId}
         defaultBranch={activeProject?.branch || 'main'}
         onDeploySuccess={(res, deployedProjectId) => {
           if (onDeploySuccess) onDeploySuccess(res, deployedProjectId);
+        }}
+      />
+
+      {/* Import Project Modal (Render API) */}
+      <ImportProjectModal
+        isOpen={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        onProjectImported={(project) => {
+          if (onProjectImported) onProjectImported(project);
         }}
       />
     </div>

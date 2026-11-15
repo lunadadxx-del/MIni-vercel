@@ -74,6 +74,9 @@ app.get('/api/health', healthController.getHealth);
 
 // Projects and Commits
 app.get('/api/projects', projectController.getProjects);
+app.post('/api/projects/import', projectController.importProject);
+app.get('/api/projects/:id/status', projectController.getProjectStatus);
+app.delete('/api/projects/:id', projectController.deleteProject);
 app.get('/api/commits', projectController.getCommits);
 
 // Deployments and Workflow Runs
