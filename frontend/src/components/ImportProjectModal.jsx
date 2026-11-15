@@ -106,12 +106,15 @@ export default function ImportProjectModal({ isOpen, onClose, onProjectImported 
       setErrorMessage('');
 
       // Create static site service on Render via backend
+      const finalBuildCommand = frameworkPreset === 'static' ? '' : buildCommand.trim();
+      const finalPublishDir = frameworkPreset === 'static' ? '.' : (publishDir.trim() || '.');
+
       const res = await api.importProject({
         repoUrl: repoUrl.trim(),
         projectName: projectName.trim() || 'static-site',
         branch: branch.trim() || 'main',
-        publishDir: publishDir.trim() || '.',
-        buildCommand: buildCommand.trim()
+        publishDir: finalPublishDir,
+        buildCommand: finalBuildCommand
       });
 
       if (!res.success || !res.project) {
@@ -326,6 +329,9 @@ export default function ImportProjectModal({ isOpen, onClose, onProjectImported 
                     placeholder="."
                     className="w-full px-3 py-2 bg-white border border-[#E5E5E5] rounded-md text-xs text-[#171717] placeholder-[#888888] focus:outline-none focus:border-[#171717] focus:ring-1 focus:ring-[#171717] font-mono"
                   />
+                  <p className="text-[10px] text-[#666666] mt-0.5">
+                    {frameworkPreset === 'static' ? 'Root directory (.) containing index.html' : 'Output directory after build (e.g. dist)'}
+                  </p>
                 </div>
                 <div>
                   <label className="block text-[#171717] font-medium mb-1">
@@ -333,11 +339,17 @@ export default function ImportProjectModal({ isOpen, onClose, onProjectImported 
                   </label>
                   <input
                     type="text"
-                    value={buildCommand}
+                    disabled={frameworkPreset === 'static'}
+                    value={frameworkPreset === 'static' ? '' : buildCommand}
                     onChange={(e) => setBuildCommand(e.target.value)}
-                    placeholder="e.g. npm run build"
-                    className="w-full px-3 py-2 bg-white border border-[#E5E5E5] rounded-md text-xs text-[#171717] placeholder-[#888888] focus:outline-none focus:border-[#171717] focus:ring-1 focus:ring-[#171717] font-mono"
+                    placeholder={frameworkPreset === 'static' ? 'None (plain HTML needs no build)' : 'e.g. npm run build'}
+                    className={`w-full px-3 py-2 border border-[#E5E5E5] rounded-md text-xs font-mono focus:outline-none ${
+                      frameworkPreset === 'static' ? 'bg-[#FAFAFA] text-[#888888] cursor-not-allowed' : 'bg-white text-[#171717] focus:border-[#171717]'
+                    }`}
                   />
+                  <p className="text-[10px] text-[#666666] mt-0.5">
+                    {frameworkPreset === 'static' ? 'Pure static sites do not need compilation.' : 'Command to compile project assets.'}
+                  </p>
                 </div>
               </div>
 
