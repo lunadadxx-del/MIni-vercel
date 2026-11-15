@@ -23,7 +23,7 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
-  const currentVersion = 'Version 1.0';
+  const currentVersion = 'Version 1.1';
 
   const handleSubmit = (e) => {
     e.preventDefault();
