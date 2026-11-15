@@ -3,169 +3,127 @@ import {
   FolderGit2,
   ExternalLink,
   GitBranch,
-  Star,
-  GitFork,
   Globe,
   FileCode2,
-  Info,
-  Server,
   Rocket,
   FolderCode
 } from 'lucide-react';
+import StatusBadge from '../components/StatusBadge';
 
 export default function Projects({ projects = [], health, onTriggerDeployProject }) {
   return (
     <div className="space-y-6">
       
-      {/* Header Info Banner */}
-      <div className="border border-card-border bg-card rounded-2xl p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-white">Configured Projects</h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Active projects configured for continuous integration, Docker containerization, and Render hosting.
-            </p>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300">
-            <Info className="w-3.5 h-3.5 text-indigo-400" />
-            <span>2 Active Deployment Targets</span>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E5E5E5]">
+        <div>
+          <h2 className="text-base font-semibold text-[#171717]">Projects</h2>
+          <p className="text-xs text-[#666666] mt-0.5">
+            Configured projects connected to GitHub Actions and Render cloud deployment.
+          </p>
         </div>
       </div>
 
-      {/* Scope Disclaimer / College Demonstration Note */}
-      <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-xl text-xs text-slate-400 flex items-start gap-3">
-        <Info className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
-        <p>
-          <strong className="text-slate-200">DevOps Architecture Notice:</strong> DeployFlow manages both the core deployment platform and independent web applications (such as the <strong>Demo Portfolio</strong>). Each project has a dedicated GitHub Actions workflow and Render service configuration.
-        </p>
-      </div>
-
-      {/* Project Cards List */}
-      {projects.length > 0 ? (
-        <div className="space-y-6">
-          {projects.map((proj) => (
-            <div
-              key={proj.id}
-              className="bg-card border border-card-border rounded-2xl p-6 shadow-sm hover:border-slate-700 transition-all"
-            >
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-card-border">
-                <div className="space-y-2">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="p-2.5 rounded-xl bg-indigo-600/15 border border-indigo-500/20 text-indigo-400">
-                      {proj.id === 'proj_demo_portfolio' ? <FolderCode className="w-5 h-5" /> : <FolderGit2 className="w-5 h-5" />}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-bold text-white font-mono">{proj.name}</h3>
-                        <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          {proj.visibility || 'Active'}
-                        </span>
-                        {proj.id === 'proj_demo_portfolio' && (
-                          <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                            Demo Target
-                          </span>
-                        )}
+      {/* Projects List in Clean Vercel Table */}
+      <div className="bg-white border border-[#E5E5E5] rounded-lg overflow-hidden shadow-none">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[#666666] font-medium text-[11px] uppercase tracking-wider">
+                <th className="py-3 px-5">Project Name</th>
+                <th className="py-3 px-4">Repository</th>
+                <th className="py-3 px-4">Framework / Runtime</th>
+                <th className="py-3 px-4">Workflow</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E5E5]">
+              {projects.map((proj) => (
+                <tr key={proj.id} className="hover:bg-[#FAFAFA] transition-colors">
+                  {/* Name & Desc */}
+                  <td className="py-3.5 px-5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] text-[#171717]">
+                        {proj.id === 'proj_demo_portfolio' ? <FolderCode className="w-4 h-4" /> : <FolderGit2 className="w-4 h-4" />}
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5">{proj.description}</p>
+                      <div>
+                        <div className="font-semibold text-[#171717]">{proj.name}</div>
+                        <div className="text-[11px] text-[#666666] line-clamp-1">{proj.description}</div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </td>
 
-                {/* Action buttons */}
-                <div className="flex flex-wrap items-center gap-3">
-                  {onTriggerDeployProject && (
-                    <button
-                      onClick={() => onTriggerDeployProject(proj.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md transition-all"
-                    >
-                      <Rocket className="w-3.5 h-3.5" />
-                      <span>Deploy This Project</span>
-                    </button>
-                  )}
-
-                  {proj.liveUrl && (
-                    <a
-                      href={proj.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-md transition-all"
-                    >
-                      <Globe className="w-4 h-4" />
-                      <span>Live Website</span>
-                      <ExternalLink className="w-3.5 h-3.5 ml-0.5" />
-                    </a>
-                  )}
-
-                  {proj.repoUrl && (
+                  {/* Repo & Branch */}
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <a
                       href={proj.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-card-border transition-all"
+                      className="font-mono text-xs text-[#171717] hover:underline flex items-center gap-1"
                     >
-                      <FolderGit2 className="w-4 h-4 text-indigo-400" />
-                      <span>GitHub</span>
-                      <ExternalLink className="w-3.5 h-3.5 ml-0.5" />
+                      <span>{proj.fullName || 'Repository'}</span>
+                      <ExternalLink className="w-3 h-3 text-[#888888]" />
                     </a>
-                  )}
-                </div>
-              </div>
+                    <div className="flex items-center gap-1 text-[11px] text-[#666666] font-mono mt-0.5">
+                      <GitBranch className="w-3 h-3 text-[#888888]" />
+                      <span>{proj.branch || 'main'}</span>
+                    </div>
+                  </td>
 
-              {/* Details Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-6 text-xs">
-                <div className="p-3.5 rounded-xl bg-[#0a0f1d] border border-card-border">
-                  <span className="text-[10px] text-slate-500 uppercase font-semibold block mb-1">
-                    Root Directory
-                  </span>
-                  <div className="flex items-center gap-1.5 text-slate-200 font-mono font-semibold">
-                    <span>{proj.rootDirectory || '.'}</span>
-                  </div>
-                </div>
+                  {/* Runtime */}
+                  <td className="py-3.5 px-4 whitespace-nowrap text-[#666666]">
+                    <span className="px-2 py-0.5 rounded bg-[#FAFAFA] border border-[#E5E5E5] text-[11px] font-mono text-[#171717]">
+                      {proj.id === 'proj_demo_portfolio' ? 'Vite + React (Static)' : 'Docker (Alpine) + Node.js'}
+                    </span>
+                  </td>
 
-                <div className="p-3.5 rounded-xl bg-[#0a0f1d] border border-card-border">
-                  <span className="text-[10px] text-slate-500 uppercase font-semibold block mb-1">
-                    CI/CD Workflow
-                  </span>
-                  <div className="flex items-center gap-1.5 text-slate-200 font-mono font-semibold">
-                    <FileCode2 className="w-3.5 h-3.5 text-purple-400" />
-                    <span>.github/workflows/{proj.workflowId}</span>
-                  </div>
-                </div>
+                  {/* Workflow */}
+                  <td className="py-3.5 px-4 whitespace-nowrap font-mono text-[11px] text-[#666666]">
+                    <div className="flex items-center gap-1">
+                      <FileCode2 className="w-3 h-3 text-[#888888]" />
+                      <span>{proj.workflowId}</span>
+                    </div>
+                  </td>
 
-                <div className="p-3.5 rounded-xl bg-[#0a0f1d] border border-card-border">
-                  <span className="text-[10px] text-slate-500 uppercase font-semibold block mb-1">
-                    Deployment Runtime
-                  </span>
-                  <div className="flex items-center gap-1.5 text-slate-200 font-mono font-semibold">
-                    <Server className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="truncate">{proj.runtime || 'Render Web Service'}</span>
-                  </div>
-                </div>
+                  {/* Status */}
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <StatusBadge status="completed" conclusion="success" size="xs" />
+                  </td>
 
-                <div className="p-3.5 rounded-xl bg-[#0a0f1d] border border-card-border">
-                  <span className="text-[10px] text-slate-500 uppercase font-semibold block mb-1">
-                    Monitored Branch
-                  </span>
-                  <div className="flex items-center gap-1.5 text-slate-200 font-mono font-semibold">
-                    <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
-                    <span>{proj.branch || 'main'}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+                  {/* Actions */}
+                  <td className="py-3.5 px-5 whitespace-nowrap text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {proj.liveUrl && (
+                        <a
+                          href={proj.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-[#FAFAFA] text-[#171717] text-xs font-medium rounded-md border border-[#E5E5E5] transition-colors"
+                        >
+                          <Globe className="w-3 h-3 text-[#666666]" />
+                          <span>Visit</span>
+                        </a>
+                      )}
+
+                      {onTriggerDeployProject && (
+                        <button
+                          onClick={() => onTriggerDeployProject(proj.id)}
+                          className="flex items-center gap-1 px-2.5 py-1 bg-[#171717] hover:bg-[#262626] text-white text-xs font-medium rounded-md transition-colors"
+                        >
+                          <Rocket className="w-3 h-3" />
+                          <span>Deploy</span>
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      ) : (
-        <div className="p-12 text-center bg-card border border-card-border rounded-2xl">
-          <FolderGit2 className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-          <h3 className="text-sm font-semibold text-white">No Repository Configured</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-            Configure your target repository by setting GITHUB_OWNER and GITHUB_REPO in the backend .env configuration.
-          </p>
-        </div>
-      )}
+      </div>
+
     </div>
   );
 }

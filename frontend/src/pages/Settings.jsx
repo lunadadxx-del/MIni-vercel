@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
 import {
   Settings as SettingsIcon,
-  Server,
   Shield,
   Key,
   FolderGit2,
   FileCode2,
   Globe,
-  CheckCircle2,
-  AlertTriangle,
   ExternalLink,
   Copy,
   Check,
-  Terminal,
-  HelpCircle
+  Terminal
 } from 'lucide-react';
-import { api, getSavedAdminSecret, saveAdminSecret } from '../services/api';
+import { getSavedAdminSecret, saveAdminSecret } from '../services/api';
 
 export default function Settings({ health, project, onRefresh }) {
   const [sessionSecret, setSessionSecret] = useState(getSavedAdminSecret());
@@ -36,121 +32,121 @@ export default function Settings({ health, project, onRefresh }) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       
       {/* Settings Header */}
-      <div className="border-b border-card-border pb-4">
-        <h2 className="text-lg font-bold text-white flex items-center gap-2">
-          <SettingsIcon className="w-5 h-5 text-indigo-400" />
+      <div className="border-b border-[#E5E5E5] pb-4">
+        <h2 className="text-base font-semibold text-[#171717] flex items-center gap-2">
+          <SettingsIcon className="w-4 h-4 text-[#171717]" />
           <span>System & Project Configuration</span>
         </h2>
-        <p className="text-xs text-slate-400 mt-0.5">
+        <p className="text-xs text-[#666666] mt-0.5">
           Inspect active environment parameters, verify backend connectivity, and manage demo credentials.
         </p>
       </div>
 
-      {/* Backend Environment Variables Inspection (Safe & Masked) */}
-      <div className="bg-card border border-card-border rounded-2xl p-6 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-card-border">
+      {/* Backend Environment Variables Inspection */}
+      <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E5]">
           <div>
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-xs font-semibold text-[#171717] uppercase tracking-wider flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-[#15803D]" />
               <span>Target Parameters & Security Masking</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Production values read securely from the backend environment. Secrets are never transmitted to the browser.
+            <p className="text-xs text-[#666666] mt-0.5">
+              Production values read securely from the backend environment.
             </p>
           </div>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-            Read-Only Telemetry
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#FAFAFA] text-[#666666] border border-[#E5E5E5]">
+            Telemetry
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
           
-          {/* GitHub Repository Target */}
-          <div className="p-4 rounded-xl bg-[#0a0f1d] border border-card-border space-y-1">
+          {/* Target GitHub Repository */}
+          <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 font-medium flex items-center gap-1.5">
-                <FolderGit2 className="w-3.5 h-3.5 text-indigo-400" />
+              <span className="text-[#666666] font-medium flex items-center gap-1.5">
+                <FolderGit2 className="w-3.5 h-3.5 text-[#888888]" />
                 Target GitHub Repository
               </span>
-              <span className={`font-mono text-[10px] uppercase font-semibold ${project ? 'text-emerald-400' : 'text-amber-400'}`}>
+              <span className={`font-mono text-[10px] uppercase font-semibold ${project ? 'text-[#15803D]' : 'text-[#B45309]'}`}>
                 {project ? 'Connected' : 'Not Set'}
               </span>
             </div>
-            <div className="font-mono text-slate-200 text-sm pt-1">
+            <div className="font-mono text-[#171717] text-xs pt-0.5">
               {project?.fullName || 'GITHUB_OWNER/GITHUB_REPO'}
             </div>
           </div>
 
-          {/* Workflow ID */}
-          <div className="p-4 rounded-xl bg-[#0a0f1d] border border-card-border space-y-1">
+          {/* Workflow File */}
+          <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 font-medium flex items-center gap-1.5">
-                <FileCode2 className="w-3.5 h-3.5 text-purple-400" />
-                Workflow Pipeline File
+              <span className="text-[#666666] font-medium flex items-center gap-1.5">
+                <FileCode2 className="w-3.5 h-3.5 text-[#888888]" />
+                Primary Workflow Pipeline
               </span>
-              <span className="font-mono text-[10px] uppercase text-emerald-400 font-semibold">
+              <span className="font-mono text-[10px] uppercase text-[#15803D] font-semibold">
                 deploy.yml
               </span>
             </div>
-            <div className="font-mono text-slate-200 text-sm pt-1">
+            <div className="font-mono text-[#171717] text-xs pt-0.5">
               .github/workflows/{project?.workflowId || 'deploy.yml'}
             </div>
           </div>
 
           {/* GitHub Token Status */}
-          <div className="p-4 rounded-xl bg-[#0a0f1d] border border-card-border space-y-1">
+          <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 font-medium flex items-center gap-1.5">
-                <Key className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-[#666666] font-medium flex items-center gap-1.5">
+                <Key className="w-3.5 h-3.5 text-[#888888]" />
                 GitHub PAT Token
               </span>
-              <span className={`font-mono text-[10px] uppercase font-semibold ${health?.configuration?.githubTokenConfigured ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {health?.configuration?.githubTokenConfigured ? 'Configured (Active)' : 'Unconfigured'}
+              <span className={`font-mono text-[10px] uppercase font-semibold ${health?.configuration?.githubTokenConfigured ? 'text-[#15803D]' : 'text-[#B45309]'}`}>
+                {health?.configuration?.githubTokenConfigured ? 'Configured' : 'Unconfigured'}
               </span>
             </div>
-            <div className="font-mono text-slate-400 text-sm pt-1">
+            <div className="font-mono text-[#888888] text-xs pt-0.5">
               {health?.configuration?.githubTokenConfigured ? 'ghp_••••••••••••••••••••••••••••' : 'Missing GITHUB_TOKEN'}
             </div>
           </div>
 
-          {/* Backend Admin Secret Status */}
-          <div className="p-4 rounded-xl bg-[#0a0f1d] border border-card-border space-y-1">
+          {/* Server Admin Secret */}
+          <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 font-medium flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-rose-400" />
+              <span className="text-[#666666] font-medium flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-[#888888]" />
                 Server Admin Secret Key
               </span>
-              <span className={`font-mono text-[10px] uppercase font-semibold ${health?.configuration?.adminSecretConfigured ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <span className={`font-mono text-[10px] uppercase font-semibold ${health?.configuration?.adminSecretConfigured ? 'text-[#15803D]' : 'text-[#DC2626]'}`}>
                 {health?.configuration?.adminSecretConfigured ? 'Protected' : 'Missing'}
               </span>
             </div>
-            <div className="font-mono text-slate-400 text-sm pt-1">
+            <div className="font-mono text-[#888888] text-xs pt-0.5">
               {health?.configuration?.adminSecretConfigured ? '••••••••••••••••••••••••••••••••' : 'Missing ADMIN_SECRET'}
             </div>
           </div>
 
           {/* Live App URL */}
-          <div className="p-4 rounded-xl bg-[#0a0f1d] border border-card-border space-y-1 md:col-span-2">
+          <div className="p-3.5 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] space-y-1 md:col-span-2">
             <div className="flex items-center justify-between">
-              <span className="text-slate-400 font-medium flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-blue-400" />
-                Render Live Application URL
+              <span className="text-[#666666] font-medium flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[#888888]" />
+                Live Application URL
               </span>
               {project?.liveUrl && (
                 <a
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                  className="text-xs text-[#171717] hover:underline flex items-center gap-1 font-medium"
                 >
                   Visit <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
-            <div className="font-mono text-slate-200 text-sm pt-1">
+            <div className="font-mono text-[#171717] text-xs pt-0.5">
               {project?.liveUrl || 'LIVE_APP_URL not configured'}
             </div>
           </div>
@@ -158,67 +154,56 @@ export default function Settings({ health, project, onRefresh }) {
         </div>
       </div>
 
-      {/* Browser Demo Session Authentication */}
-      <div className="bg-card border border-card-border rounded-2xl p-6">
-        <h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-1">
-          <Key className="w-4 h-4 text-indigo-400" />
+      {/* Session Secret Form */}
+      <div className="bg-white border border-[#E5E5E5] rounded-lg p-5">
+        <h3 className="text-xs font-semibold text-[#171717] uppercase tracking-wider flex items-center gap-1.5 mb-1">
+          <Key className="w-3.5 h-3.5 text-[#171717]" />
           <span>Demo Session Authentication</span>
         </h3>
-        <p className="text-xs text-slate-400 mb-4">
-          Store your admin secret key in your browser's session storage. This enables 1-click deployment dispatch without re-typing credentials each time.
+        <p className="text-xs text-[#666666] mb-4">
+          Save your admin secret key in browser session storage for 1-click deployment dispatch.
         </p>
 
-        <form onSubmit={handleSaveSecret} className="flex flex-col sm:flex-row gap-3">
+        <form onSubmit={handleSaveSecret} className="flex flex-col sm:flex-row gap-2.5">
           <input
             type="password"
             value={sessionSecret}
             onChange={(e) => setSessionSecret(e.target.value)}
             placeholder="Enter ADMIN_SECRET for this session"
-            className="flex-1 px-4 py-2.5 rounded-xl bg-[#0a0f1d] border border-card-border text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            className="flex-1 px-3.5 py-1.5 rounded-md bg-white border border-[#E5E5E5] text-xs text-[#171717] placeholder-[#888888] focus:outline-none focus:border-[#171717] focus:ring-1 focus:ring-[#171717]"
           />
           <button
             type="submit"
-            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md transition-all whitespace-nowrap"
+            className="px-4 py-1.5 rounded-md bg-[#171717] hover:bg-[#262626] text-white text-xs font-medium transition-colors whitespace-nowrap"
           >
-            {savedSuccess ? 'Saved in Session!' : 'Save for Session'}
+            {savedSuccess ? 'Saved in Session' : 'Save for Session'}
           </button>
         </form>
       </div>
 
-      {/* DevOps Architecture Reference & Guide */}
-      <div className="bg-card border border-card-border rounded-2xl p-6 space-y-4">
-        <h3 className="text-sm font-semibold text-white flex items-center gap-2 pb-3 border-b border-card-border">
-          <Terminal className="w-4 h-4 text-purple-400" />
-          <span>College DevOps Architecture Reference</span>
+      {/* Architecture Reference */}
+      <div className="bg-white border border-[#E5E5E5] rounded-lg p-5 space-y-3">
+        <h3 className="text-xs font-semibold text-[#171717] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-[#E5E5E5]">
+          <Terminal className="w-3.5 h-3.5 text-[#171717]" />
+          <span>DevOps Architecture Reference</span>
         </h3>
 
-        <div className="space-y-4 text-xs text-slate-300">
+        <div className="space-y-3 text-xs text-[#666666]">
           <div>
-            <h4 className="font-semibold text-white mb-1">1. Local Docker Build & Run</h4>
+            <span className="font-semibold text-[#171717] block mb-1">Local Docker Build & Run:</span>
             <div className="relative group">
-              <pre className="p-3 bg-[#0a0f1d] border border-card-border rounded-xl font-mono text-[11px] text-slate-200 overflow-x-auto">
-{`# Build the backend Docker image locally
-docker build -t deployflow-backend ./backend
-
-# Run the container locally binding port 5000
+              <pre className="p-3 bg-[#FAFAFA] border border-[#E5E5E5] rounded-md font-mono text-[11px] text-[#171717] overflow-x-auto">
+{`docker build -t deployflow-backend ./backend
 docker run -p 5000:5000 --env-file backend/.env deployflow-backend`}
               </pre>
               <button
                 onClick={() => copyToClipboard('docker build -t deployflow-backend ./backend && docker run -p 5000:5000 deployflow-backend', 'docker')}
-                className="absolute right-3 top-3 p-1.5 rounded-lg bg-card border border-card-border text-slate-400 hover:text-white"
+                className="absolute right-2 top-2 p-1 rounded bg-white border border-[#E5E5E5] text-[#666666] hover:text-[#171717]"
                 title="Copy commands"
               >
-                {copiedKey === 'docker' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedKey === 'docker' ? <Check className="w-3 h-3 text-[#15803D]" /> : <Copy className="w-3 h-3" />}
               </button>
             </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-white mb-1">2. Render Deployment Mapping</h4>
-            <ul className="list-disc pl-5 space-y-1 text-slate-400">
-              <li><strong>Frontend:</strong> Render Static Site &bull; Root: <code className="text-indigo-300">frontend</code> &bull; Build: <code className="text-indigo-300">npm ci && npm run build</code> &bull; Publish: <code className="text-indigo-300">dist</code></li>
-              <li><strong>Backend:</strong> Render Web Service &bull; Runtime: <code className="text-indigo-300">Docker</code> &bull; Root: <code className="text-indigo-300">backend</code> &bull; Health Check: <code className="text-indigo-300">/api/health</code></li>
-            </ul>
           </div>
         </div>
       </div>

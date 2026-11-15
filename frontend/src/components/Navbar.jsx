@@ -16,47 +16,47 @@ export default function Navbar({
   const getPageTitle = (path) => {
     switch (path) {
       case '/':
-        return 'Overview Dashboard';
+        return 'Overview';
       case '/projects':
-        return 'Configured Projects';
+        return 'Projects';
       case '/deployments':
-        return 'Deployment Runs';
+        return 'Deployments';
       case '/logs':
-        return 'Build & Job Logs';
+        return 'Build Logs';
       case '/settings':
-        return 'Project & Service Settings';
+        return 'Settings';
       default:
-        return 'DeployFlow Platform';
+        return 'Platform';
     }
   };
 
   return (
-    <header className="h-16 bg-[#0a0f1d]/80 backdrop-blur-md border-b border-card-border sticky top-0 z-30 px-6 flex items-center justify-between">
+    <header className="h-14 bg-white border-b border-[#E5E5E5] sticky top-0 z-30 px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <h1 className="text-sm font-semibold text-white tracking-tight">
+        <h1 className="text-xs font-semibold text-[#171717] tracking-tight">
           {getPageTitle(location.pathname)}
         </h1>
 
         {/* Project Selector dropdown in Navbar */}
         {projects.length > 0 && (
           <div className="hidden sm:flex items-center gap-2">
-            <span className="text-slate-600">/</span>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-card border border-card-border text-xs">
-              <Layers className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="text-[#E5E5E5]">/</span>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#FAFAFA] border border-[#E5E5E5] text-xs">
+              <Layers className="w-3.5 h-3.5 text-[#666666]" />
               <select
                 value={selectedProjectId || projects[0]?.id}
                 onChange={(e) => onSelectProject && onSelectProject(e.target.value)}
-                className="bg-transparent text-slate-200 font-medium focus:outline-none cursor-pointer text-xs"
+                className="bg-transparent text-[#171717] font-medium focus:outline-none cursor-pointer text-xs"
               >
                 {projects.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-[#0e1422] text-slate-200">
+                  <option key={p.id} value={p.id} className="bg-white text-[#171717]">
                     {p.name}
                   </option>
                 ))}
               </select>
               {activeProject && (
-                <span className="flex items-center gap-1 text-[11px] text-slate-400 font-mono ml-1 border-l border-slate-700 pl-2">
-                  <GitBranch className="w-3 h-3 text-indigo-400" />
+                <span className="flex items-center gap-1 text-[11px] text-[#666666] font-mono ml-1 border-l border-[#E5E5E5] pl-2">
+                  <GitBranch className="w-3 h-3 text-[#888888]" />
                   {activeProject.branch || 'main'}
                 </span>
               )}
@@ -65,21 +65,21 @@ export default function Navbar({
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         {/* Refresh button */}
         <button
           onClick={onRefresh}
           disabled={isRefreshing}
-          className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/60 border border-transparent hover:border-card-border transition-colors disabled:opacity-50"
+          className="p-1.5 text-[#666666] hover:text-[#171717] rounded-md hover:bg-[#F5F5F5] border border-transparent hover:border-[#E5E5E5] transition-colors disabled:opacity-50"
           title="Refresh telemetry"
         >
-          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-indigo-400' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#171717]' : ''}`} />
         </button>
 
-        {/* Trigger Deploy Action */}
+        {/* Deploy Action Button (Vercel Style: Solid Black, White Text) */}
         <button
           onClick={onOpenDeployModal}
-          className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-semibold rounded-lg shadow-md shadow-indigo-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#171717] hover:bg-[#262626] text-white text-xs font-medium rounded-md transition-colors"
         >
           <Rocket className="w-3.5 h-3.5" />
           <span>Deploy</span>

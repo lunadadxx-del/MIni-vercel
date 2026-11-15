@@ -74,166 +74,148 @@ export default function TriggerDeployModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg bg-[#0e1422] border border-card-border rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px]">
+      <div className="relative w-full max-w-md bg-white border border-[#E5E5E5] rounded-lg shadow-xl overflow-hidden animate-in fade-in duration-150">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-card-border bg-[#131b2e]/60">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <Rocket className="w-4 h-4" />
-            </div>
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E5E5E5] bg-[#FAFAFA]">
+          <div className="flex items-center gap-2">
+            <Rocket className="w-4 h-4 text-[#171717]" />
             <div>
-              <h3 className="text-base font-semibold text-white">Trigger Deployment</h3>
-              <p className="text-xs text-slate-400">Dispatch GitHub Actions CI/CD workflow</p>
+              <h3 className="text-xs font-semibold text-[#171717]">Trigger Deployment</h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800/60 transition-colors"
+            className="text-[#888888] hover:text-[#171717] p-1 rounded transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
           {error && (
-            <div className="p-3.5 bg-rose-950/30 border border-rose-900/50 rounded-xl text-xs text-rose-300 flex items-start gap-2.5">
-              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+            <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] rounded-md text-xs text-[#DC2626] flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-[#DC2626] flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {successResult ? (
-            <div className="p-4 bg-emerald-950/30 border border-emerald-900/50 rounded-xl text-center space-y-3">
-              <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+            <div className="p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-md text-center space-y-2.5">
+              <CheckCircle2 className="w-6 h-6 text-[#15803D] mx-auto" />
               <div>
-                <h4 className="text-sm font-semibold text-emerald-200">Workflow Dispatched!</h4>
-                <p className="text-xs text-slate-300 mt-1">
-                  GitHub Actions queued a new run for <strong className="text-white">{currentProject?.name}</strong> on branch <code className="text-emerald-300 font-mono font-bold">{branch}</code>.
-                </p>
-                <p className="text-[11px] text-slate-400 font-mono mt-1">
-                  Workflow: {currentProject?.workflowId}
+                <h4 className="text-xs font-semibold text-[#15803D]">Workflow Dispatched</h4>
+                <p className="text-xs text-[#666666] mt-1">
+                  Queued deployment for <strong className="text-[#171717]">{currentProject?.name}</strong> on branch <code className="text-[#171717] font-mono font-medium">{branch}</code>.
                 </p>
               </div>
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md transition-all"
+                  className="w-full py-1.5 px-3 rounded-md bg-[#171717] hover:bg-[#262626] text-white text-xs font-medium transition-colors"
                 >
-                  View in Deployments
+                  Close & View Runs
                 </button>
               </div>
             </div>
           ) : (
             <>
-              {/* Project Target Selector */}
+              {/* Target Project Selection */}
               {projects.length > 1 && (
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  <label className="block text-xs font-medium text-[#171717] mb-1.5">
                     Target Project
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {projects.map((proj) => (
-                      <button
-                        type="button"
-                        key={proj.id}
-                        onClick={() => setSelectedProjectId(proj.id)}
-                        className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between gap-1.5 ${
-                          selectedProjectId === proj.id
-                            ? 'bg-indigo-600/15 border-indigo-500 text-white ring-1 ring-indigo-500'
-                            : 'bg-[#0a0f1d] border-card-border text-slate-400 hover:border-slate-700'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between w-full">
-                          <span className="text-xs font-semibold line-clamp-1">{proj.name}</span>
-                          <FolderGit2 className={`w-3.5 h-3.5 ${selectedProjectId === proj.id ? 'text-indigo-400' : 'text-slate-600'}`} />
-                        </div>
-                        <span className="text-[10px] font-mono text-slate-400">
-                          {proj.workflowId}
-                        </span>
-                      </button>
-                    ))}
+                  <div className="grid grid-cols-2 gap-2">
+                    {projects.map((proj) => {
+                      const isSelected = selectedProjectId === proj.id;
+                      return (
+                        <button
+                          type="button"
+                          key={proj.id}
+                          onClick={() => setSelectedProjectId(proj.id)}
+                          className={`p-2.5 rounded-md border text-left transition-colors flex flex-col justify-between ${
+                            isSelected
+                              ? 'bg-[#171717] text-white border-[#171717]'
+                              : 'bg-[#FAFAFA] border-[#E5E5E5] text-[#171717] hover:border-[#CCCCCC]'
+                          }`}
+                        >
+                          <span className="text-xs font-medium truncate">{proj.name}</span>
+                          <span className={`text-[10px] font-mono mt-1 ${isSelected ? 'text-white/70' : 'text-[#888888]'}`}>
+                            {proj.workflowId}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-[#171717] mb-1">
                   Target Branch
                 </label>
                 <div className="relative">
-                  <GitBranch className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <GitBranch className="w-3.5 h-3.5 text-[#888888] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={branch}
                     onChange={(e) => setBranch(e.target.value)}
                     required
                     placeholder="main"
-                    className="w-full pl-10 pr-4 py-2.5 bg-card border border-card-border rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-mono"
+                    className="w-full pl-9 pr-3 py-1.5 bg-white border border-[#E5E5E5] rounded-md text-xs text-[#171717] placeholder-[#888888] focus:outline-none focus:border-[#171717] focus:ring-1 focus:ring-[#171717] font-mono"
                   />
                 </div>
-                <p className="mt-1 text-[11px] text-slate-400">
-                  Target workflow: <code className="text-indigo-300 font-mono">{currentProject?.workflowId || 'deploy.yml'}</code>
-                </p>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-medium text-[#171717] mb-1">
                   Admin Secret Key
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-3.5 h-3.5 text-[#888888] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="password"
                     value={adminSecret}
                     onChange={(e) => setAdminSecret(e.target.value)}
                     required
                     placeholder="Enter backend ADMIN_SECRET"
-                    className="w-full pl-10 pr-4 py-2.5 bg-card border border-card-border rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                    className="w-full pl-9 pr-3 py-1.5 bg-white border border-[#E5E5E5] rounded-md text-xs text-[#171717] placeholder-[#888888] focus:outline-none focus:border-[#171717] focus:ring-1 focus:ring-[#171717]"
                   />
                 </div>
-                <div className="flex items-center justify-between mt-2">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-400 hover:text-slate-300">
-                    <input
-                      type="checkbox"
-                      checked={rememberSecret}
-                      onChange={(e) => setRememberSecret(e.target.checked)}
-                      className="rounded border-slate-700 bg-slate-900 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    Save secret for this browser session
-                  </label>
-                </div>
-              </div>
-
-              <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-xl text-[11px] text-slate-400 space-y-1">
-                <span className="font-semibold text-slate-300">Security Note:</span>
-                <p>
-                  Deployments are authenticated server-side. Your secret is verified against the backend's environment variables and never logged or exposed.
-                </p>
+                <label className="flex items-center gap-1.5 cursor-pointer text-[11px] text-[#666666] mt-1.5">
+                  <input
+                    type="checkbox"
+                    checked={rememberSecret}
+                    onChange={(e) => setRememberSecret(e.target.checked)}
+                    className="rounded border-[#E5E5E5] text-[#171717] focus:ring-[#171717]"
+                  />
+                  Remember in this browser session
+                </label>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-2">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E5E5E5]">
                 <button
                   type="button"
                   onClick={onClose}
                   disabled={loading}
-                  className="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium text-[#666666] hover:text-[#171717] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800/60 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#171717] hover:bg-[#262626] disabled:bg-[#888888] disabled:cursor-not-allowed text-white text-xs font-medium rounded-md transition-colors"
                 >
                   {loading ? (
                     <>
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      Triggering...
+                      Dispatching...
                     </>
                   ) : (
                     <>

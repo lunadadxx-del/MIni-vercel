@@ -18,7 +18,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
-  const [deployTargetProject, setDeployTargetProject] = useState(null);
+  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
 
   const fetchData = useCallback(async (isSilent = false) => {
     if (!isSilent) {
@@ -47,7 +47,7 @@ export default function App() {
         // Handled gracefully
       }
 
-      // 3. Deployments (fetch all runs across workflows)
+      // 3. Deployments
       try {
         const deployData = await api.getDeployments(1, 30);
         setDeployments(deployData.deployments || []);
@@ -73,7 +73,6 @@ export default function App() {
   useEffect(() => {
     fetchData();
 
-    // Periodic telemetry polling every 25 seconds
     const interval = setInterval(() => {
       fetchData(true);
     }, 25000);
@@ -85,7 +84,6 @@ export default function App() {
     if (deployedProjectId) {
       setSelectedProjectId(deployedProjectId);
     }
-    // Re-sync after short delay so GitHub Actions has time to register queued run
     setTimeout(() => {
       fetchData(true);
     }, 2500);
@@ -104,6 +102,8 @@ export default function App() {
         onRefresh={() => fetchData(false)}
         isRefreshing={isRefreshing}
         onDeploySuccess={handleDeploySuccess}
+        isDeployModalOpen={isDeployModalOpen}
+        setIsDeployModalOpen={setIsDeployModalOpen}
       >
         <Routes>
           <Route
@@ -119,6 +119,7 @@ export default function App() {
                 health={health}
                 loading={loading}
                 error={error}
+                onOpenDeploy={() => setIsDeployModalOpen(true)}
               />
             }
           />
@@ -131,7 +132,7 @@ export default function App() {
                 loading={loading}
                 onTriggerDeployProject={(id) => {
                   setSelectedProjectId(id);
-                  // Trigger open modal via query or state
+                  setIsDeployModalOpen(true);
                 }}
               />
             }
@@ -147,6 +148,7 @@ export default function App() {
                 loading={loading}
                 error={error}
                 onRefresh={() => fetchData(false)}
+                onOpenDeploy={() => setIsDeployModalOpen(true)}
               />
             }
           />

@@ -4,22 +4,25 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        background: '#090d16',
-        card: '#111726',
-        'card-border': '#1e293b',
-        muted: '#94a3b8',
-        accent: {
-          blue: '#3b82f6',
-          purple: '#8b5cf6',
-          indigo: '#6366f1',
-          emerald: '#10b981',
-          rose: '#f43f5e',
-          amber: '#f59e0b',
-        }
+        page: '#FFFFFF',
+        subtle: '#FAFAFA',
+        hover: '#F5F5F5',
+        border: '#E5E5E5',
+        primary: '#171717',
+        secondary: '#666666',
+        success: {
+          DEFAULT: '#15803D',
+          light: '#F0FDF4',
+          border: '#BBF7D0',
+        },
+        danger: {
+          DEFAULT: '#DC2626',
+          light: '#FEF2F2',
+          border: '#FECACA',
+        },
       },
       fontFamily: {
         sans: [
@@ -32,10 +35,14 @@ export default {
         ],
         mono: [
           'JetBrains Mono',
-          'Fira Code',
           'ui-monospace',
           'monospace'
         ]
+      },
+      borderRadius: {
+        DEFAULT: '6px',
+        md: '6px',
+        lg: '8px',
       }
     },
   },

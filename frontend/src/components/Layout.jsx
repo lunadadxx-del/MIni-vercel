@@ -12,36 +12,40 @@ export default function Layout({
   activeProject,
   onRefresh,
   isRefreshing,
-  onDeploySuccess
+  onDeploySuccess,
+  isDeployModalOpen,
+  setIsDeployModalOpen
 }) {
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [internalModalOpen, setInternalModalOpen] = useState(false);
+  const modalOpen = isDeployModalOpen !== undefined ? isDeployModalOpen : internalModalOpen;
+  const setModalOpen = setIsDeployModalOpen || setInternalModalOpen;
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-white">
       {/* Fixed Left Sidebar */}
       <Sidebar health={health} liveUrl={activeProject?.liveUrl} />
 
-      {/* Main Content Area (offset by 64 = 16rem = w-64) */}
-      <div className="flex-1 ml-64 flex flex-col min-w-0">
+      {/* Main Content Area */}
+      <div className="flex-1 ml-60 flex flex-col min-w-0 bg-[#FAFAFA]">
         <Navbar
           projects={projects}
           selectedProjectId={selectedProjectId}
           onSelectProject={onSelectProject}
           activeProject={activeProject}
-          onOpenDeployModal={() => setIsDeployModalOpen(true)}
+          onOpenDeployModal={() => setModalOpen(true)}
           onRefresh={onRefresh}
           isRefreshing={isRefreshing}
         />
 
-        <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-6 lg:p-8 max-w-6xl w-full mx-auto">
           {children}
         </main>
       </div>
 
       {/* Deployment Modal */}
       <TriggerDeployModal
-        isOpen={isDeployModalOpen}
-        onClose={() => setIsDeployModalOpen(false)}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
         projects={projects}
         initialProjectId={selectedProjectId}
         defaultBranch={activeProject?.branch || 'main'}

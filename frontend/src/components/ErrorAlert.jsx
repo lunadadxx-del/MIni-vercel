@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Info, CheckCircle2, X } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from 'lucide-react';
 
 export default function ErrorAlert({
   type = 'error',
@@ -10,32 +10,32 @@ export default function ErrorAlert({
 }) {
   const configs = {
     error: {
-      border: 'border-rose-900/60',
-      bg: 'bg-rose-950/20',
-      text: 'text-rose-200',
-      icon: AlertTriangle,
-      iconColor: 'text-rose-400'
+      border: 'border-[#FECACA]',
+      bg: 'bg-[#FEF2F2]',
+      text: 'text-[#DC2626]',
+      icon: AlertCircle,
+      iconColor: 'text-[#DC2626]'
     },
     warning: {
-      border: 'border-amber-900/60',
-      bg: 'bg-amber-950/20',
-      text: 'text-amber-200',
+      border: 'border-[#FDE68A]',
+      bg: 'bg-[#FFFBEB]',
+      text: 'text-[#B45309]',
       icon: AlertTriangle,
-      iconColor: 'text-amber-400'
+      iconColor: 'text-[#B45309]'
     },
     info: {
-      border: 'border-indigo-900/60',
-      bg: 'bg-indigo-950/20',
-      text: 'text-indigo-200',
+      border: 'border-[#E5E5E5]',
+      bg: 'bg-[#FAFAFA]',
+      text: 'text-[#171717]',
       icon: Info,
-      iconColor: 'text-indigo-400'
+      iconColor: 'text-[#666666]'
     },
     success: {
-      border: 'border-emerald-900/60',
-      bg: 'bg-emerald-950/20',
-      text: 'text-emerald-200',
+      border: 'border-[#BBF7D0]',
+      bg: 'bg-[#F0FDF4]',
+      text: 'text-[#15803D]',
       icon: CheckCircle2,
-      iconColor: 'text-emerald-400'
+      iconColor: 'text-[#15803D]'
     }
   };
 
@@ -43,20 +43,20 @@ export default function ErrorAlert({
   const Icon = style.icon;
 
   return (
-    <div className={`border ${style.border} ${style.bg} ${style.text} rounded-xl p-4 flex items-start gap-3 shadow-sm`}>
-      <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${style.iconColor}`} />
-      <div className="flex-1 text-sm">
-        {title && <h4 className="font-semibold mb-0.5">{title}</h4>}
-        <div className="text-slate-300 leading-relaxed text-xs md:text-sm">{message}</div>
-        {action && <div className="mt-3">{action}</div>}
+    <div className={`border ${style.border} ${style.bg} rounded-md p-3.5 flex items-start gap-3`}>
+      <Icon className={`w-4 h-4 flex-shrink-0 mt-0.5 ${style.iconColor}`} />
+      <div className="flex-1 text-xs">
+        {title && <h4 className={`font-semibold mb-0.5 ${style.text}`}>{title}</h4>}
+        <div className="text-[#666666] leading-relaxed">{message}</div>
+        {action && <div className="mt-2.5">{action}</div>}
       </div>
       {onDismiss && (
         <button
           onClick={onDismiss}
-          className="text-slate-400 hover:text-white transition-colors p-1"
+          className="text-[#888888] hover:text-[#171717] transition-colors p-0.5"
           title="Dismiss"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
       )}
     </div>
